@@ -66,7 +66,7 @@ function generateCardNews(news, sectionNewsEl) {
                     <div>pubblicato da ${element.author}</div>
                     <div>in data ${modifyFormatDate(element.published)}</div>
                     <p class="card-text mt-3">${element.content}</p>
-                    <img class="w-100" src="${element.img}" alt="" srcset="">
+                    <img class="w-100" src="${element.img}" alt="${element.title}" srcset="">
                 </div>
             </div>
             `
