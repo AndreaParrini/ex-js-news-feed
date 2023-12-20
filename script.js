@@ -40,8 +40,13 @@ console.log(news);
 
 
 const sectionNewsEl = document.getElementById('section_news');
+const sectionFilterEl = document.getElementById('filter_news');
+const allSavedNews = []
 
 generateCardNews(news, sectionNewsEl);
+createOptionValue(sectionFilterEl);
+savedNews();
+
 
 /**
  * Function to generate all card taht contain all news
@@ -60,7 +65,7 @@ function generateCardNews(news, sectionNewsEl) {
                         <h3 class="card-title mb-0">${element.title}</h3>
                     </div>
                     <div>
-                        <i class="fa-regular fa-bookmark fa-xl" data-id-news="${element.id}"></i>
+                        ${generateIcon(element.id)}
                     </div>
                     </div>
                     <div>pubblicato da ${element.author}</div>
@@ -148,3 +153,163 @@ function modifyFormatDate(date) {
     return formattedDate;
 }
 
+
+/**
+ * Function to create a list of a all single typeTag
+ * @param {array} news array of all news
+ * @returns return array that contain single tag
+ */
+function filteredListTag(news) {
+    const tagsList = news.map(element => element.tags)
+    console.log(tagsList);
+
+    const filteredTag = [];
+
+    tagsList.forEach(newsTags => {
+        console.log(newsTags);
+        newsTags.forEach(newTag => {
+
+            !filteredTag.includes(newTag) ? filteredTag.push(newTag) : ''
+
+        })
+
+    })
+    return filteredTag;
+}
+
+
+/**
+ * function to create option value and insert in html
+ * @param {Element} filterEl DOM element where insert option value
+ */
+function createOptionValue(filterEl) {
+    const filteredTag = filteredListTag(news);
+    filteredTag.forEach(tag => {
+        const optionMarkup = `<option value="${tag}">${tag}</option>`
+        filterEl.insertAdjacentHTML('beforeend', optionMarkup)
+    });
+}
+
+/**
+ * funcion to create an array that contain only object selected
+ * @param {array} news array that contain all news
+ * @param {string} tagType the value of select
+ * @returns the array that conatin only object selected
+ */
+function tagSelect(news, tagType){
+    if (tagType === 'allnews') {
+        return news
+    }else{
+        const tagSelect = news.filter(tag => tag.tags.includes(tagType))
+        return tagSelect    
+    }
+    
+}
+
+/**
+ * function to insert in html all news selected
+ * @param {string} tagType the value of select
+ * @param {array} selectedTag the array that contain all object of value selected
+ */
+function filteredTag(tagType, selectedTag){
+    sectionNewsEl.innerHTML = "";
+
+    if (tagType === 'allnews') {
+        generateCardNews(selectedTag, sectionNewsEl);
+        savedNews();
+    } else if (selectedTag.length != 0) {
+        generateCardNews(selectedTag, sectionNewsEl)
+        savedNews();
+    } else {
+        sectionNewsEl.innerHTML = "No news available";
+    }
+}
+
+/**
+ * determinate the value of select
+ * @returns the value of select
+ */
+function valueOfSelect(){
+    const tagType = document.getElementById('filter_news').value;
+    console.log(tagType);
+    return tagType;
+}
+
+sectionFilterEl.addEventListener('change', function () {
+
+    const selectedTag = tagSelect(news, valueOfSelect());
+    filteredTag(valueOfSelect(), selectedTag);
+    
+})
+
+
+
+document.getElementById('saved_news').addEventListener('change', function () {
+    console.log(this.checked);
+    if (this.checked) {
+        const savedNews = news.filter(newsId => {
+            console.log(allSavedNews, String(newsId.id));
+            if (allSavedNews.includes(String(newsId.id))) {
+                return true
+            }
+        })
+        console.log(savedNews);
+        sectionNewsEl.innerHTML = ""
+        const selectedTag = tagSelect(savedNews, valueOfSelect());
+        filteredTag(valueOfSelect(), selectedTag);
+    }else 
+        {
+            sectionNewsEl.innerHTML = ""
+            const selectedTag = tagSelect(news, valueOfSelect());
+            filteredTag(valueOfSelect(), selectedTag);
+            savedNews();
+        }
+
+})
+
+
+
+/**
+ * function to generate markup of icon. determinate if icon saved or not
+ * @param {string} id the id of news 
+ * @returns the markup of icon
+ */
+function generateIcon(id){
+
+    if(allSavedNews.includes(String(id))){
+        const iconMarkup = `<i class="fa-solid fa-bookmark fa-xl" data-id-news="${id}"></i>`
+        return iconMarkup
+    } else{
+       const iconMarkup = `<i class="fa-regular fa-bookmark fa-xl" data-id-news="${id}"></i>`
+       return iconMarkup
+    }
+
+}
+
+
+/**
+ * function to saved all icon 
+ * @returns list of all icon
+ */
+function selectAllIcon(){
+    const allIcon = document.querySelectorAll('i');
+    console.log(allIcon);
+    return allIcon
+}
+
+/**
+ * function to activate the event listener on icon 
+ */
+function savedNews(){
+    const allIcon = selectAllIcon();
+    allIcon.forEach(icon => {
+        console.log(icon.classList);
+        icon.addEventListener('click', function () {
+            icon.classList.remove('fa-regular')
+            icon.classList.add('fa-solid')
+            allSavedNews.push(icon.getAttribute('data-id-news'))
+            console.log(allSavedNews);
+        })
+    
+    })
+}

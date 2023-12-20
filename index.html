@@ -12,7 +12,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
-<body>
+<body class="bg-secondary">
 
     <!-- Start header -->
     <header>
@@ -25,11 +25,22 @@
     <!-- start main -->
     <main>
         <div class="container w-50">
-            <section id="section_filter">
-
+            <section id="section_filter" class="bg-light">
+                <div class="p-3 d-flex justify-content-between">
+                    <select name="filter_news" id="filter_news" class="">
+                        <option value="allnews" selected>Tutte le News</option>
+                        <option value="politica">politica</option>
+                    </select>
+                    <div class="">
+                        <input class="form-check-input" type="checkbox" value="" id="saved_news">
+                        <label class="form-check-label">
+                          Solo le news salvate
+                        </label>
+                      </div>
+                </div>
             </section>
             <section id="section_news">
-
+                
             </section>
         </div>
     </main>
