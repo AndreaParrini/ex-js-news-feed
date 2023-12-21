@@ -59,6 +59,12 @@ createOptionValue(sectionFilterEl);
 savedNews();
 
 controlSelect(sectionFilterEl);
+controlCheckboxSaved()
+
+
+/********************
+ * FUNCTIONS
+ ********************/
 
 /**
  * Function to generate all card taht contain all news
@@ -117,7 +123,7 @@ function createBoxTagNews(tag) {
 
     //richiamo la funzione per generare l'elemento tag
     generateTagEl(boxTagEl, tag);
-    
+
 }
 
 /**
@@ -147,7 +153,7 @@ function generateTagEl(boxTagEl, tag) {
 function listColorTag() {
     // recupero la lista contenente ogni tipologia di tag
     const listTag = filteredListTag(news)
-    
+
 
     // ciclo all'interno della lista recuperata precedentemente contenente ogni singolo tag
     listTag.forEach((tag) => {
@@ -187,7 +193,7 @@ function colorTag() {
         // ciclo all'interno dell'array contente ogni colore di ogni tipologia di tag
         colorsTag.forEach(color => {
             // se il nome del tag è uguale alla tipologia di tag
-            if(color.name === tag){
+            if (color.name === tag) {
                 // ciclo dentro l'array di appoggio 
                 oneTypeTagEl.forEach(element => {
                     // e modififo lo style del background all'elemento
@@ -300,13 +306,19 @@ function tagSelect(news, tagType) {
 function filteredTag(tagType, selectedTag) {
     // azzero l'elemento della DOM in cui inserire le news selezionate
     sectionNewsEl.innerHTML = "";
-
-    if (tagType === 'allnews') {
+    // se c'è selezionato tutte le news, e clicco solo le notizie salvate e non ho niente 
+    if (tagType === 'allnews' && savedNewsChecked() && selectedTag.length === 0) {
+        // visualizzo questo
+        sectionNewsEl.innerHTML = "No news saved";
+    }
+    else if (tagType === 'allnews') {
         generateCardNews(selectedTag, sectionNewsEl);
         savedNews();
     } else if (selectedTag.length != 0) {
         generateCardNews(selectedTag, sectionNewsEl)
         savedNews();
+    } else if (savedNewsChecked() && selectedTag.length === 0) {
+        sectionNewsEl.innerHTML = "No news saved";
     } else {
         sectionNewsEl.innerHTML = "No news available";
     }
@@ -316,35 +328,62 @@ function filteredTag(tagType, selectedTag) {
  * function to manage the change value of select filter news
  * @param {element} sectionFilterEl DOM element control the event change
  */
-function controlSelect(sectionFilterEl){
+function controlSelect(sectionFilterEl) {
     sectionFilterEl.addEventListener('change', function () {
-        // recupero e salva in una variabile tutti gli oggetti selezionati
-        const selectedTag = tagSelect(news, valueOfSelect());
-        filteredTag(valueOfSelect(), selectedTag);
+        // se il checkbox è flaggato e seleziono all news 
+        if (savedNewsChecked() && valueOfSelect() === 'allnews') {
+            // creo un array con tutte le notizie salvate
+            const savedNews = news.filter(news => allSavedNews.includes(String(news.id)))
+            // prendo gli oggetti con solo i tag selezionati dall'array delle notizie salvate
+            const selectedTag = tagSelect(savedNews, valueOfSelect());
+            // stampo in pagina l'array generato
+            filteredTag(valueOfSelect(), selectedTag);
+        } else if (savedNewsChecked()) {
+            // invece se seleziono un altro valore dalla select e il check è flaggato, allora l'array lo creo con solo le notizie salvate di quel tag
+            const savedNews = news.filter(news => news.tags.includes(valueOfSelect()) && allSavedNews.includes(String(news.id)))
+            // prendo gli oggetti salvati e con i tag selezionati
+            const selectedTag = tagSelect(savedNews, valueOfSelect());
+            // stamp in pagina gli oggetti dell'array
+            filteredTag(valueOfSelect(), selectedTag);
+        } else {
+            // altrimenti se non è flaggato il checkbox prendo tutte le news del valore selezionato
+            const selectedTag = tagSelect(news, valueOfSelect());
+            // stamp in pagina gli oggetti dell'array
+            filteredTag(valueOfSelect(), selectedTag);
+        }
     })
 }
 
-document.getElementById('saved_news').addEventListener('change', function () {
-    console.log(this.checked);
-    if (this.checked) {
-        const savedNews = news.filter(newsId => {
-            console.log(allSavedNews, String(newsId.id));
-            if (allSavedNews.includes(String(newsId.id))) {
-                return true
-            }
-        })
-        console.log(savedNews);
-        sectionNewsEl.innerHTML = ""
-        const selectedTag = tagSelect(savedNews, valueOfSelect());
-        filteredTag(valueOfSelect(), selectedTag);
-    } else {
-        sectionNewsEl.innerHTML = ""
-        const selectedTag = tagSelect(news, valueOfSelect());
-        filteredTag(valueOfSelect(), selectedTag);
-        savedNews();
-    }
+/**
+ * Function to control the cahng value of checkbox saved news
+ */
+function controlCheckboxSaved(){
+    document.getElementById('saved_news').addEventListener('change', function () {
+        // se flaggato 
+        if (savedNewsChecked()) {
+            // filtro tutte le notizie e creo un array con solo quelle salvate
+            const savedNews = news.filter(newsId => {
+                // ciclo nell'array di tutte le notizie salvate, quando trovo un id uguale lo metto nel nuovo array
+                if (allSavedNews.includes(String(newsId.id))) {
+                    return true
+                }
+            })
+            // azzero l'html
+            sectionNewsEl.innerHTML = ""
+            // creo un array con solo gli oggetti salvati
+            const selectedTag = tagSelect(savedNews, valueOfSelect());
+            // stampo in pagina l'array
+            filteredTag(valueOfSelect(), selectedTag);
+        } else {
+            sectionNewsEl.innerHTML = ""
+            const selectedTag = tagSelect(news, valueOfSelect());
+            filteredTag(valueOfSelect(), selectedTag);
+            savedNews();
+        }
 
-})
+    })
+}
+
 
 
 /**
@@ -353,7 +392,7 @@ document.getElementById('saved_news').addEventListener('change', function () {
  * @returns the markup of icon
  */
 function generateIcon(id) {
-
+    // generazione delle icon se l'id è presente nell'array delle icone salvate allora lo stampo con l'icona solid altrimenti regular
     if (allSavedNews.includes(String(id))) {
         const iconMarkup = `<i class="fa-solid fa-bookmark fa-xl" data-id-news="${id}"></i>`
         return iconMarkup
@@ -375,7 +414,7 @@ function selectAllIcon() {
 }
 
 /**
- * function to activate the event listener on icon 
+ * function to activate the event listener on all icon 
  */
 function savedNews() {
     const allIcon = selectAllIcon();
@@ -400,4 +439,11 @@ function generateRandomColor() {
     return color;
 }
 
-
+/**
+ * @returns function to determinate if checkbox is checked or not
+ */
+function savedNewsChecked() {
+    if (document.getElementById('saved_news').checked) {
+        return true
+    }
+}
