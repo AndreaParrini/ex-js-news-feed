@@ -58,7 +58,7 @@ generateCardNews(news, sectionNewsEl);
 createOptionValue(sectionFilterEl);
 savedNews();
 
-
+controlSelect(sectionFilterEl);
 
 /**
  * Function to generate all card taht contain all news
@@ -200,8 +200,6 @@ function colorTag() {
 
 }
 
-
-
 /**
  * function to convert date
  * @param {Date} date the date to convert in DD-MM-YYYY
@@ -231,18 +229,22 @@ function modifyFormatDate(date) {
  * @returns return array that contain single tag
  */
 function filteredListTag(news) {
+    // creo un array contenente solo le proprietà tags
     const tagsList = news.map(element => element.tags)
-
+    // creo un array alla quale inseriro ogni tipologia di tag
     const filteredTag = [];
 
+    // ciclo nell'array che continene tutte le proprietà tags di ogni oggetto
     tagsList.forEach(newsTags => {
+        // essendo degli array ci ciclo dentro per prendere il singolo valore di ognuna
         newsTags.forEach(newTag => {
-
+            // se il singolo valore non è contenuto nell'array in cui ci saranno tutte le tipologie allora lo inserisco 
             !filteredTag.includes(newTag) ? filteredTag.push(newTag) : ''
 
         })
 
     })
+    // restituisco l'arrai che contiene tutte le tipologie di tag
     return filteredTag;
 }
 
@@ -252,11 +254,26 @@ function filteredListTag(news) {
  * @param {Element} filterEl DOM element where insert option value
  */
 function createOptionValue(filterEl) {
+    // recupero e lo salvo una variabile l'array contenente tutte le tipologie di tag
     const filteredTag = filteredListTag(news);
+    // cilco al suo interno 
     filteredTag.forEach(tag => {
+        // per ogni tag creo un markup
         const optionMarkup = `<option value="${tag}">${tag}</option>`
+        // lo inserico nell'elemento della DOM che mi sono passato nella funzione
         filterEl.insertAdjacentHTML('beforeend', optionMarkup)
     });
+}
+
+
+/**
+ * determinate the value of select
+ * @returns the value of select
+ */
+function valueOfSelect() {
+    const tagType = document.getElementById('filter_news').value;
+    console.log(tagType);
+    return tagType;
 }
 
 /**
@@ -281,6 +298,7 @@ function tagSelect(news, tagType) {
  * @param {array} selectedTag the array that contain all object of value selected
  */
 function filteredTag(tagType, selectedTag) {
+    // azzero l'elemento della DOM in cui inserire le news selezionate
     sectionNewsEl.innerHTML = "";
 
     if (tagType === 'allnews') {
@@ -295,23 +313,16 @@ function filteredTag(tagType, selectedTag) {
 }
 
 /**
- * determinate the value of select
- * @returns the value of select
+ * function to manage the change value of select filter news
+ * @param {element} sectionFilterEl DOM element control the event change
  */
-function valueOfSelect() {
-    const tagType = document.getElementById('filter_news').value;
-    console.log(tagType);
-    return tagType;
+function controlSelect(sectionFilterEl){
+    sectionFilterEl.addEventListener('change', function () {
+        // recupero e salva in una variabile tutti gli oggetti selezionati
+        const selectedTag = tagSelect(news, valueOfSelect());
+        filteredTag(valueOfSelect(), selectedTag);
+    })
 }
-
-sectionFilterEl.addEventListener('change', function () {
-
-    const selectedTag = tagSelect(news, valueOfSelect());
-    filteredTag(valueOfSelect(), selectedTag);
-
-})
-
-
 
 document.getElementById('saved_news').addEventListener('change', function () {
     console.log(this.checked);
@@ -334,7 +345,6 @@ document.getElementById('saved_news').addEventListener('change', function () {
     }
 
 })
-
 
 
 /**
