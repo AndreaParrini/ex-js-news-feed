@@ -34,10 +34,21 @@ const news = [
         author: 'Gabriele Neri',
         published: new Date('2023-05-2'),
         img: './images/modern-art.jpg'
+    },
+    {
+        id: 5,
+        title: 'Arte moderna: oltre i confini convenzionali',
+        content: "Un'analisi delle tendenze e delle sfide nell'arte contemporanea, con interviste a artisti emergenti.",
+        tags: ['cucina', 'serie tv'],
+        author: 'Antonino Cannavacciulo',
+        published: new Date('2023-05-2'),
+        img: './images/modern-art.jpg'
     }
 ]
-console.log(news);
 
+const colorsTag = [];
+// richiamo la funzione per popolare l'array con il colore per ogni tag
+listColorTag();
 
 const sectionNewsEl = document.getElementById('section_news');
 const sectionFilterEl = document.getElementById('filter_news');
@@ -48,6 +59,7 @@ createOptionValue(sectionFilterEl);
 savedNews();
 
 
+
 /**
  * Function to generate all card taht contain all news
  * @param {array} news array who contain news information
@@ -56,6 +68,7 @@ savedNews();
 function generateCardNews(news, sectionNewsEl) {
 
     news.forEach(element => {
+        // creo il markup per ogni news
         const newsMarkup =
             `
             <div class="card rounded-0 my-3">
@@ -75,16 +88,21 @@ function generateCardNews(news, sectionNewsEl) {
                 </div>
             </div>
             `
+        //inserisco in html il marckup creato
         sectionNewsEl.insertAdjacentHTML('beforeend', newsMarkup)
+        // richiamo la funzione per generare il box che contiene i tag
         createBoxTagNews(element.tags)
+        // richiamo la funzione per colorare i tag
+        colorTag();
     });
 }
 
 /**
- * function to create a box where insere tag
+ * function to create a box where insert tag
  * @param {array} tag property tag of news, array who contain all tags of news
  */
 function createBoxTagNews(tag) {
+    //
     const boxTagEl = document.createElement('div')
     boxTagEl.classList.add('mt-3')
 
@@ -94,6 +112,7 @@ function createBoxTagNews(tag) {
     cardEl.forEach(card => {
         card.insertAdjacentElement('beforeend', boxTagEl);
     })
+    colorTag();
 }
 
 /**
@@ -102,36 +121,75 @@ function createBoxTagNews(tag) {
  * @param {array} tag 
  */
 function generateTagEl(boxTagEl, tag) {
+
     tag.forEach(tag => {
         const tagEl = document.createElement('div')
         tagEl.classList.add('btn')
         tagEl.classList.add('me-1')
         tagEl.classList.add('text-light')
-        colorTag(tagEl, tag);
         tagEl.innerHTML = tag;
         boxTagEl.insertAdjacentElement('beforeend', tagEl);
     });
 }
 
 /**
- * function to modify background color of tag
- * @param {element} tagEl insert element that modify style
- * @param {*} tag 
+ * Function to creat a list of color for each news tag
  */
-function colorTag(tagEl, tag) {
+function listColorTag() {
 
-    if (tag === 'viaggi') {
-        tagEl.style.backgroundColor = 'red';
-    } else if (tag === 'geo') {
-        tagEl.style.backgroundColor = 'orange';
-    } else if (tag === 'tech') {
-        tagEl.style.backgroundColor = 'blue';
-    } else if (tag === 'cucina') {
-        tagEl.style.backgroundColor = 'purple';
-    } else if (tag === 'arte') {
-        tagEl.style.backgroundColor = 'green';
-    }
+    const listTag = filteredListTag(news)
+    const allTag = document.querySelectorAll('.btn')
+    listTag.forEach((tag, index) => {
+        const oneTypeTag = []
+        allTag.forEach(element => {
+            if (element.innerHTML === tag) {
+                oneTypeTag.push(element)
+            }
+        })
+        const color = generateRandomColor();
+        const object = {
+            name: tag,
+            color: color
+        }
+        colorsTag.push(object)
+        console.log(colorsTag);
+
+    })
+
 }
+
+/**
+ * function to modify background color of tag
+ */
+function colorTag() {
+
+    const allTag = document.querySelectorAll('.btn');
+    console.log(allTag);
+
+    
+    const listTag = filteredListTag(news);
+
+    listTag.forEach(tag => {
+        const oneTypeTagEl = []
+        allTag.forEach(element => {
+            element.innerHTML === tag ? oneTypeTagEl.push(element) : ''
+        })
+        colorsTag.forEach(color => {
+            console.log(color.name, tag);
+            if(color.name === tag){
+                oneTypeTagEl.forEach(element => {
+                    console.log(element);
+                    element.style.backgroundColor = color.color
+                })
+            }
+        })
+        console.log(oneTypeTagEl);
+    })
+
+
+}
+
+
 
 /**
  * function to convert date
@@ -148,7 +206,6 @@ function modifyFormatDate(date) {
     if (day.length < 2)
         day = '0' + day;
     const formattedDate = `${day}-${month}-${year}`;
-    console.log(formattedDate);
 
     return formattedDate;
 }
@@ -161,12 +218,10 @@ function modifyFormatDate(date) {
  */
 function filteredListTag(news) {
     const tagsList = news.map(element => element.tags)
-    console.log(tagsList);
 
     const filteredTag = [];
 
     tagsList.forEach(newsTags => {
-        console.log(newsTags);
         newsTags.forEach(newTag => {
 
             !filteredTag.includes(newTag) ? filteredTag.push(newTag) : ''
@@ -196,14 +251,14 @@ function createOptionValue(filterEl) {
  * @param {string} tagType the value of select
  * @returns the array that conatin only object selected
  */
-function tagSelect(news, tagType){
+function tagSelect(news, tagType) {
     if (tagType === 'allnews') {
         return news
-    }else{
+    } else {
         const tagSelect = news.filter(tag => tag.tags.includes(tagType))
-        return tagSelect    
+        return tagSelect
     }
-    
+
 }
 
 /**
@@ -211,7 +266,7 @@ function tagSelect(news, tagType){
  * @param {string} tagType the value of select
  * @param {array} selectedTag the array that contain all object of value selected
  */
-function filteredTag(tagType, selectedTag){
+function filteredTag(tagType, selectedTag) {
     sectionNewsEl.innerHTML = "";
 
     if (tagType === 'allnews') {
@@ -229,7 +284,7 @@ function filteredTag(tagType, selectedTag){
  * determinate the value of select
  * @returns the value of select
  */
-function valueOfSelect(){
+function valueOfSelect() {
     const tagType = document.getElementById('filter_news').value;
     console.log(tagType);
     return tagType;
@@ -239,7 +294,7 @@ sectionFilterEl.addEventListener('change', function () {
 
     const selectedTag = tagSelect(news, valueOfSelect());
     filteredTag(valueOfSelect(), selectedTag);
-    
+
 })
 
 
@@ -257,13 +312,12 @@ document.getElementById('saved_news').addEventListener('change', function () {
         sectionNewsEl.innerHTML = ""
         const selectedTag = tagSelect(savedNews, valueOfSelect());
         filteredTag(valueOfSelect(), selectedTag);
-    }else 
-        {
-            sectionNewsEl.innerHTML = ""
-            const selectedTag = tagSelect(news, valueOfSelect());
-            filteredTag(valueOfSelect(), selectedTag);
-            savedNews();
-        }
+    } else {
+        sectionNewsEl.innerHTML = ""
+        const selectedTag = tagSelect(news, valueOfSelect());
+        filteredTag(valueOfSelect(), selectedTag);
+        savedNews();
+    }
 
 })
 
@@ -274,14 +328,14 @@ document.getElementById('saved_news').addEventListener('change', function () {
  * @param {string} id the id of news 
  * @returns the markup of icon
  */
-function generateIcon(id){
+function generateIcon(id) {
 
-    if(allSavedNews.includes(String(id))){
+    if (allSavedNews.includes(String(id))) {
         const iconMarkup = `<i class="fa-solid fa-bookmark fa-xl" data-id-news="${id}"></i>`
         return iconMarkup
-    } else{
-       const iconMarkup = `<i class="fa-regular fa-bookmark fa-xl" data-id-news="${id}"></i>`
-       return iconMarkup
+    } else {
+        const iconMarkup = `<i class="fa-regular fa-bookmark fa-xl" data-id-news="${id}"></i>`
+        return iconMarkup
     }
 
 }
@@ -291,25 +345,35 @@ function generateIcon(id){
  * function to saved all icon 
  * @returns list of all icon
  */
-function selectAllIcon(){
+function selectAllIcon() {
     const allIcon = document.querySelectorAll('i');
-    console.log(allIcon);
     return allIcon
 }
 
 /**
  * function to activate the event listener on icon 
  */
-function savedNews(){
+function savedNews() {
     const allIcon = selectAllIcon();
     allIcon.forEach(icon => {
-        console.log(icon.classList);
         icon.addEventListener('click', function () {
             icon.classList.remove('fa-regular')
             icon.classList.add('fa-solid')
             allSavedNews.push(icon.getAttribute('data-id-news'))
-            console.log(allSavedNews);
         })
-    
+
     })
 }
+
+
+/**
+ * function to generate a random color 
+ * @returns a string of color
+ */
+function generateRandomColor() {
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    const color = "#" + randomColor;
+    return color;
+}
+
+
