@@ -37,12 +37,12 @@ const news = [
     },
     {
         id: 5,
-        title: 'Arte moderna: oltre i confini convenzionali',
-        content: "Un'analisi delle tendenze e delle sfide nell'arte contemporanea, con interviste a artisti emergenti.",
-        tags: ['cucina', 'serie tv'],
-        author: 'Antonino Cannavacciulo',
+        title: 'Iniziata la nuova stagione di Masterchef',
+        content: "Continua il cooking show, con i soliti tre giudici Antonino Cannavacciulo, Giorgio Locatelli e Bruno Barbieri. Quest'anno sarà la la 13sima stagione",
+        tags: ['cucina', 'show'],
+        author: 'Sky Italia',
         published: new Date('2023-05-2'),
-        img: './images/modern-art.jpg'
+        img: './images/master-chef.png'
     }
 ]
 
@@ -383,7 +383,6 @@ function controlCheckboxSaved(){
 
     })
 }
-
 
 
 /**
