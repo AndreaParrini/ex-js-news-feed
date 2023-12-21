@@ -102,17 +102,22 @@ function generateCardNews(news, sectionNewsEl) {
  * @param {array} tag property tag of news, array who contain all tags of news
  */
 function createBoxTagNews(tag) {
-    //
+    // creo l'elemento html div
     const boxTagEl = document.createElement('div')
+    // aggiungo all'elemento la classe mt-3
     boxTagEl.classList.add('mt-3')
 
-    generateTagEl(boxTagEl, tag);
-
+    // recupero tutti gli elementi html con classe card-body
     const cardEl = document.querySelectorAll('.card-body');
+    // ciclo all'interno della lista che ho recuperato
     cardEl.forEach(card => {
+        // per ogni elemento inserisco 
         card.insertAdjacentElement('beforeend', boxTagEl);
     })
-    colorTag();
+
+    //richiamo la funzione per generare l'elemento tag
+    generateTagEl(boxTagEl, tag);
+    
 }
 
 /**
@@ -121,13 +126,17 @@ function createBoxTagNews(tag) {
  * @param {array} tag 
  */
 function generateTagEl(boxTagEl, tag) {
-
+    // ciclo all'interno della lista che è stata passata contenente tutti i tag di una news
     tag.forEach(tag => {
+        // creo l'elemento tag
         const tagEl = document.createElement('div')
+        // aggiungo all'elemento le tre classi btn, me-1, text-light
         tagEl.classList.add('btn')
         tagEl.classList.add('me-1')
         tagEl.classList.add('text-light')
+        // inserisco all'interno dell'elemento il testo del tag
         tagEl.innerHTML = tag;
+        // aggiungo elemento al box che mi sono passato dalla funzione
         boxTagEl.insertAdjacentElement('beforeend', tagEl);
     });
 }
@@ -136,23 +145,21 @@ function generateTagEl(boxTagEl, tag) {
  * Function to creat a list of color for each news tag
  */
 function listColorTag() {
-
+    // recupero la lista contenente ogni tipologia di tag
     const listTag = filteredListTag(news)
-    const allTag = document.querySelectorAll('.btn')
-    listTag.forEach((tag, index) => {
-        const oneTypeTag = []
-        allTag.forEach(element => {
-            if (element.innerHTML === tag) {
-                oneTypeTag.push(element)
-            }
-        })
+    
+
+    // ciclo all'interno della lista recuperata precedentemente contenente ogni singolo tag
+    listTag.forEach((tag) => {
+        // genero un colore random richiamando la funzione
         const color = generateRandomColor();
+        // ceo un oggetto contenente nome del tag e il colore
         const object = {
             name: tag,
             color: color
         }
+        // inserisco nell'array dei colori l'oggetto creato
         colorsTag.push(object)
-        console.log(colorsTag);
 
     })
 
@@ -163,27 +170,31 @@ function listColorTag() {
  */
 function colorTag() {
 
-    const allTag = document.querySelectorAll('.btn');
-    console.log(allTag);
-
-    
+    // recupero tutti gli elementi html con class btn
+    const allTag = document.querySelectorAll('.btn')
+    // recupero la lista contenente ogni tipologia di tag
     const listTag = filteredListTag(news);
 
+    // ciclo all'interno della lista recuperata precedentemente contenente ogni singolo tag
     listTag.forEach(tag => {
+        // creo un array vuoto di appoggio
         const oneTypeTagEl = []
+        // ciclo all'interno dell lista di elementi creata in precedenza 
         allTag.forEach(element => {
+            // se il testo nell'elemento uguale al tipologia di tag allora inserisco nell'array l'elemento
             element.innerHTML === tag ? oneTypeTagEl.push(element) : ''
         })
+        // ciclo all'interno dell'array contente ogni colore di ogni tipologia di tag
         colorsTag.forEach(color => {
-            console.log(color.name, tag);
+            // se il nome del tag è uguale alla tipologia di tag
             if(color.name === tag){
+                // ciclo dentro l'array di appoggio 
                 oneTypeTagEl.forEach(element => {
-                    console.log(element);
+                    // e modififo lo style del background all'elemento
                     element.style.backgroundColor = color.color
                 })
             }
         })
-        console.log(oneTypeTagEl);
     })
 
 
@@ -197,14 +208,17 @@ function colorTag() {
  * @returns formatted date
  */
 function modifyFormatDate(date) {
+    // prendo il mese il giorno e l'anno dalla data della news
     let month = '' + (date.getMonth() + 1);
     let day = '' + date.getDate();
     const year = date.getFullYear();
 
+    // se la lunghezza del mese e del giorno sono meno di 2 aggiungo uno 0 davanti
     if (month.length < 2)
         month = '0' + month;
     if (day.length < 2)
         day = '0' + day;
+    // concateno la nuova data
     const formattedDate = `${day}-${month}-${year}`;
 
     return formattedDate;
