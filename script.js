@@ -2,7 +2,7 @@ const news = [
     {
         id: 1,
         title: 'Scoperta di una nuova specie di papera di gomma',
-        content: 'Scoperta di una nuova specie di papera di gomma.',
+        content: 'Un breve articolo sulla recente scoperta di un specie di papera di gomma mai vista prima.',
         tags: ['geo', 'tech'],
         author: 'Diana Rossi',
         published: new Date('2023-02-11'),
@@ -11,11 +11,11 @@ const news = [
     {
         id: 2,
         title: 'Esplorando le profondità marine: il mistero degli abissi',
-        content: 'Esplorando le profondità marine: il mistero degli abissi',
+        content: "Un viaggio nelle profondità dell'oceano alla scoperta di creature misteriose e inesplorate.",
         tags: ['geo', 'viaggi'],
-        author: 'Fabio Mari',
+        author: 'Alessandra Marino',
         published: new Date('2023-03-14'),
-        img: './images/kitchen-food.jpg'
+        img: './images/deep-sea.jpg'
     },
     {
         id: 3,
@@ -24,7 +24,7 @@ const news = [
         tags: ['cucina'],
         author: 'Marta Bianchi',
         published: new Date('2023-04-20'),
-        img: './images/deep-sea.jpg'
+        img: './images/kitchen-food.jpg'
     },
     {
         id: 4,
@@ -115,7 +115,7 @@ function generateCardNews(news, sectionNewsEl) {
                     </div>
                     </div>
                     <div class="fs-6 fw-bold fst-italic">pubblicato da ${element.author}</div>
-                    <div class="fs-6 fw-bold fst-italic">in data ${modifyFormatDate(element.published)}</div>
+                    <div class="fs-6 fst-italic">in data ${modifyFormatDate(element.published)}</div>
                     <p class="card-text mt-3 fs-5 fst-italic">${element.content}</p>
                     <img class="w-100 rounded-4" src="${element.img}" alt="${element.title}" srcset="">
                 </div>
@@ -292,7 +292,7 @@ function createOptionValue(filterEl) {
     // cilco al suo interno 
     filteredTag.forEach(tag => {
         // per ogni tag creo un markup
-        const optionMarkup = `<option value="${tag}">${tag}</option>`
+        const optionMarkup = `<option class="text-capitalize" value="${tag}">${tag}</option>`
         // lo inserico nell'elemento della DOM che mi sono passato nella funzione
         filterEl.insertAdjacentHTML('beforeend', optionMarkup)
     });
@@ -316,7 +316,7 @@ function valueOfSelect() {
  * @returns the array that conatin only object selected
  */
 function tagSelect(news, tagType) {
-    if (tagType === 'allnews') {
+    if (tagType === 'alltags') {
         return news
     } else {
         const tagSelect = news.filter(tag => tag.tags.includes(tagType))
@@ -333,21 +333,26 @@ function tagSelect(news, tagType) {
 function filteredTag(tagType, selectedTag) {
     // azzero l'elemento della DOM in cui inserire le news selezionate
     sectionNewsEl.innerHTML = "";
+    // creo il markup per quando non ci sono news da vedere
+    const noNews = "<div id='nonews' class='text-light fs-5 fw-bold p-4'></div>"
     // se c'è selezionato tutte le news, e clicco solo le notizie salvate e non ho niente 
-    if (tagType === 'allnews' && savedNewsChecked() && selectedTag.length === 0) {
+    if (tagType === 'alltags' && savedNewsChecked() && selectedTag.length === 0) {
         // visualizzo questo
-        sectionNewsEl.innerHTML = "No news saved";
+        sectionNewsEl.insertAdjacentHTML('beforeend', noNews)
+        document.getElementById('nonews').innerHTML = "No news saved.";
     }
-    else if (tagType === 'allnews') {
+    else if (tagType === 'alltags') {
         generateCardNews(selectedTag, sectionNewsEl);
         savedNews();
     } else if (selectedTag.length != 0) {
         generateCardNews(selectedTag, sectionNewsEl)
         savedNews();
     } else if (savedNewsChecked() && selectedTag.length === 0) {
-        sectionNewsEl.innerHTML = "No news saved";
+        sectionNewsEl.insertAdjacentHTML('beforeend', noNews)
+        document.getElementById('nonews').innerHTML = "No news saved.";
     } else {
-        sectionNewsEl.innerHTML = "No news available";
+        sectionNewsEl.insertAdjacentHTML('beforeend', noNews)
+        document.getElementById('nonews').innerHTML = "No news available.";
     }
 }
 
@@ -358,7 +363,7 @@ function filteredTag(tagType, selectedTag) {
 function controlSelect(sectionFilterEl) {
     sectionFilterEl.addEventListener('change', function () {
         // se il checkbox è flaggato e seleziono all news 
-        if (savedNewsChecked() && valueOfSelect() === 'allnews') {
+        if (savedNewsChecked() && valueOfSelect() === 'alltags') {
             // creo un array con tutte le notizie salvate
             const savedNews = news.filter(news => allSavedNews.includes(String(news.id)))
             // prendo gli oggetti con solo i tag selezionati dall'array delle notizie salvate
