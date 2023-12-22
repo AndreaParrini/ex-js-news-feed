@@ -43,6 +43,33 @@ const news = [
         author: 'Sky Italia',
         published: new Date('2023-05-2'),
         img: './images/master-chef.png'
+    },
+    {
+        id: 6,
+        title: " Milan Campione d'Italia ",
+        content: "Il Milan dopo un'annata eccezzionale, riesce a vincere a Sassuolo e si aggiudica il suo 19simo Scudetto. Vittoria che non arrivava dal lontanto 2011",
+        tags: ['calcio', 'sport'],
+        author: 'Andrea Parrini',
+        published: new Date('2022-05-22'),
+        img: './images/scudetto-milan.webp'
+    },
+    {
+        id: 7,
+        title: " Sinner finale dolceamaro",
+        content: "Dopo aver battuto Djokovic nel girone, questa volta in finale non c'è storia, il serbo si impone per due volte sul 6-3 e vince il titolo. L'italiano esce comunque a testa altissima dopo un fantastico torneo",
+        tags: ['tennis', 'sport'],
+        author: 'Ezio Auditore',
+        published: new Date('2023-11-19'),
+        img: './images/ATP-finals.jpeg'
+    },
+    {
+        id: 8,
+        title: " Annunciato il nuovo Iphone 15 ",
+        content: "Apple durante l'evento del 12 settembre ha annunciato la data di uscita del nuovo Iphone, e tutte le sue nuove funzionalità, tra cui la Dynamic Island anche per Iphone di base.",
+        tags: ['tech'],
+        author: 'Tim Cook',
+        published: new Date('2023-09-12'),
+        img: './images/iphone-15.jpeg'
     }
 ]
 
@@ -77,20 +104,20 @@ function generateCardNews(news, sectionNewsEl) {
         // creo il markup per ogni news
         const newsMarkup =
             `
-            <div class="card rounded-0 my-3">
-                <div class="card-body">
+            <div class="card rounded-4 my-3 shadow">
+                <div class="card-body p-4">
                     <div class="d-flex align-items-start gap-5 justify-content-between">
                     <div>
-                        <h3 class="card-title mb-0">${element.title}</h3>
+                        <h3 class="card-title mb-0 text-uppercase fw-bolder ">${element.title}</h3>
                     </div>
                     <div>
                         ${generateIcon(element.id)}
                     </div>
                     </div>
-                    <div>pubblicato da ${element.author}</div>
-                    <div>in data ${modifyFormatDate(element.published)}</div>
-                    <p class="card-text mt-3">${element.content}</p>
-                    <img class="w-100" src="${element.img}" alt="${element.title}" srcset="">
+                    <div class="fs-6 fw-bold fst-italic">pubblicato da ${element.author}</div>
+                    <div class="fs-6 fw-bold fst-italic">in data ${modifyFormatDate(element.published)}</div>
+                    <p class="card-text mt-3 fs-5 fst-italic">${element.content}</p>
+                    <img class="w-100 rounded-4" src="${element.img}" alt="${element.title}" srcset="">
                 </div>
             </div>
             `
@@ -393,10 +420,10 @@ function controlCheckboxSaved(){
 function generateIcon(id) {
     // generazione delle icon se l'id è presente nell'array delle icone salvate allora lo stampo con l'icona solid altrimenti regular
     if (allSavedNews.includes(String(id))) {
-        const iconMarkup = `<i class="fa-solid fa-bookmark fa-xl" data-id-news="${id}"></i>`
+        const iconMarkup = `<i class="fa-solid fa-bookmark fa-2xl mt-1" data-id-news="${id}"></i>`
         return iconMarkup
     } else {
-        const iconMarkup = `<i class="fa-regular fa-bookmark fa-xl" data-id-news="${id}"></i>`
+        const iconMarkup = `<i class="fa-regular fa-bookmark fa-2xl mt-1" data-id-news="${id}"></i>`
         return iconMarkup
     }
 
@@ -437,6 +464,7 @@ function generateRandomColor() {
     const color = "#" + randomColor;
     return color;
 }
+
 
 /**
  * @returns function to determinate if checkbox is checked or not
