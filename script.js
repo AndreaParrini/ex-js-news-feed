@@ -86,7 +86,7 @@ createOptionValue(sectionFilterEl);
 savedNews();
 
 controlSelect(sectionFilterEl);
-controlCheckboxSaved()
+controlCheckboxSaved();
 
 
 /********************
@@ -389,7 +389,7 @@ function controlSelect(sectionFilterEl) {
 /**
  * Function to control the cahng value of checkbox saved news
  */
-function controlCheckboxSaved(){
+function controlCheckboxSaved() {
     document.getElementById('saved_news').addEventListener('change', function () {
         // se flaggato 
         if (savedNewsChecked()) {
