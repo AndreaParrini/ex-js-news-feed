@@ -305,7 +305,6 @@ function createOptionValue(filterEl) {
  */
 function valueOfSelect() {
     const tagType = document.getElementById('filter_news').value;
-    console.log(tagType);
     return tagType;
 }
 
