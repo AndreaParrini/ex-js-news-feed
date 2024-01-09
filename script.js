@@ -180,7 +180,7 @@ function generateTagEl(boxTagEl, tag) {
 function listColorTag() {
     // recupero la lista contenente ogni tipologia di tag
     const listTag = filteredListTag(news)
-
+    console.log(listTag);
 
     // ciclo all'interno della lista recuperata precedentemente contenente ogni singolo tag
     listTag.forEach((tag) => {
@@ -193,6 +193,7 @@ function listColorTag() {
         }
         // inserisco nell'array dei colori l'oggetto creato
         colorsTag.push(object)
+        console.log(colorsTag);
 
     })
 
@@ -217,6 +218,7 @@ function colorTag() {
             // se il testo nell'elemento uguale al tipologia di tag allora inserisco nell'array l'elemento
             element.innerHTML === tag ? oneTypeTagEl.push(element) : ''
         })
+        console.log(oneTypeTagEl);
         // ciclo all'interno dell'array contente ogni colore di ogni tipologia di tag
         colorsTag.forEach(color => {
             // se il nome del tag è uguale alla tipologia di tag
@@ -225,6 +227,7 @@ function colorTag() {
                 oneTypeTagEl.forEach(element => {
                     // e modififo lo style del background all'elemento
                     element.style.backgroundColor = color.color
+                    console.log(element.innerHTML, color.color);
                 })
             }
         })
@@ -466,8 +469,15 @@ function savedNews() {
  * @returns a string of color
  */
 function generateRandomColor() {
-    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-    const color = "#" + randomColor;
+    // CON QUESTA MODALITA' A VOLTE CREA DEI CODICE A 5 CIFRE E QUINDI POI NON COLORAVA IL TAG
+    /* const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    let color = "#" + randomColor;
+    if(color.length < 7){
+        color = color + "0";
+    }  */
+
+    // CON QUESTA CREA SEMPRE CODICI A 6 CIFRE
+    const color = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
     return color;
 }
 
