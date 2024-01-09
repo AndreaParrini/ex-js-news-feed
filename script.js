@@ -423,14 +423,16 @@ function controlCheckboxSaved() {
  */
 function generateIcon(id) {
     // generazione delle icon se l'id è presente nell'array delle icone salvate allora lo stampo con l'icona solid altrimenti regular
-    if (allSavedNews.includes(String(id))) {
+    /* if (allSavedNews.includes(String(id))) {
         const iconMarkup = `<i class="fa-solid fa-bookmark fa-2xl mt-1" data-id-news="${id}"></i>`
         return iconMarkup
     } else {
         const iconMarkup = `<i class="fa-regular fa-bookmark fa-2xl mt-1" data-id-news="${id}"></i>`
         return iconMarkup
-    }
-
+    } */
+    // uso l'operatore ternario per determinare la tipologia dell'icona
+    const iconMarkup = `<i class="${allSavedNews.includes(String(id)) ? 'fa-solid' : 'fa-regular'} fa-bookmark fa-2xl mt-1" data-id-news="${id}"></i>`
+    return iconMarkup
 }
 
 
