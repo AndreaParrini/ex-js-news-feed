@@ -180,7 +180,6 @@ function generateTagEl(boxTagEl, tag) {
 function listColorTag() {
     // recupero la lista contenente ogni tipologia di tag
     const listTag = filteredListTag(news)
-    console.log(listTag);
 
     // ciclo all'interno della lista recuperata precedentemente contenente ogni singolo tag
     listTag.forEach((tag) => {
@@ -193,7 +192,6 @@ function listColorTag() {
         }
         // inserisco nell'array dei colori l'oggetto creato
         colorsTag.push(object)
-        console.log(colorsTag);
 
     })
 
@@ -218,7 +216,6 @@ function colorTag() {
             // se il testo nell'elemento uguale al tipologia di tag allora inserisco nell'array l'elemento
             element.innerHTML === tag ? oneTypeTagEl.push(element) : ''
         })
-        console.log(oneTypeTagEl);
         // ciclo all'interno dell'array contente ogni colore di ogni tipologia di tag
         colorsTag.forEach(color => {
             // se il nome del tag è uguale alla tipologia di tag
@@ -227,7 +224,6 @@ function colorTag() {
                 oneTypeTagEl.forEach(element => {
                     // e modififo lo style del background all'elemento
                     element.style.backgroundColor = color.color
-                    console.log(element.innerHTML, color.color);
                 })
             }
         })
@@ -412,7 +408,7 @@ function controlCheckboxSaved() {
             sectionNewsEl.innerHTML = ""
             const selectedTag = tagSelect(news, valueOfSelect());
             filteredTag(valueOfSelect(), selectedTag);
-            savedNews();
+            /* savedNews(); */
         }
 
     })
@@ -454,12 +450,34 @@ function selectAllIcon() {
 function savedNews() {
     const allIcon = selectAllIcon();
     allIcon.forEach(icon => {
-        icon.addEventListener('click', function () {
+        icon.addEventListener('click', function (e) {
+
+            /* 
+            FUNZIONE PER GESTIRE SOLO IL SALVATAGGIO DELLA NEWS
             icon.classList.remove('fa-regular')
             icon.classList.add('fa-solid')
-            allSavedNews.push(icon.getAttribute('data-id-news'))
-        })
+            allSavedNews.push(icon.getAttribute('data-id-news')) */
 
+            // FUNZIONE PER GESTIRE SIA IL SALVATAGGIO CHE LA RIMOZIONE DEL SALVATAGGIO
+            // se quando clicco sulla news è già salvata
+            if (allSavedNews.includes(icon.getAttribute('data-id-news'))) {
+                // rimuovo la classe solid ed aggiungo la regulare per svuotare il bookmark
+                icon.classList.add('fa-regular')
+                icon.classList.remove('fa-solid')
+                // poi ciclo all'interno dell'array di tutte le news salvata per cercare l'indice e la possizione esatta della news
+                for (let i = 0; i < allSavedNews.length; i++) {
+                    // quando trovo la giusta posizione e indice
+                    if (allSavedNews[i] === icon.getAttribute('data-id-news')) {
+                        // con il metodo splice rimuovo la news dall'array delle news salvat
+                        allSavedNews.splice(i, 1);
+                    }
+                }
+            } else {
+                icon.classList.remove('fa-regular')
+                icon.classList.add('fa-solid')
+                allSavedNews.push(icon.getAttribute('data-id-news'))
+            }
+        })
     })
 }
 
@@ -477,7 +495,7 @@ function generateRandomColor() {
     }  */
 
     // CON QUESTA CREA SEMPRE CODICI A 6 CIFRE
-    const color = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+    const color = "#000000".replace(/0/g, function () { return (~~(Math.random() * 16)).toString(16); });
     return color;
 }
 
